@@ -1,4 +1,3 @@
-import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -8,6 +7,9 @@ plugins {
     alias(libs.plugins.composeCompiler)
     `maven-publish`
 }
+
+group = "com.github.FelipeMz-dev"
+version = "0.1.0"
 
 kotlin {
 
@@ -61,6 +63,17 @@ kotlin {
         }
         jsMain.dependencies {
             implementation(libs.wrappers.browser)
+        }
+    }
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = project.group.toString()
+            artifactId = "Compox2D"
+            version = project.version.toString()
+            from(components["kotlin"])
         }
     }
 }

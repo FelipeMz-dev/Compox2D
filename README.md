@@ -1,35 +1,134 @@
-This is a Kotlin Multiplatform project targeting Android, iOS, Web, Desktop (JVM).
+# Compox2D
 
-* [/iosApp](./iosApp/iosApp) contains an iOS application. Even if you’re sharing your UI with Compose Multiplatform,
-  you need this entry point for your iOS app. This is also where you should add SwiftUI code for your project.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![JitPack](https://jitpack.io/v/FelipeMz-dev/Compox2D.svg)](https://jitpack.io/#FelipeMz-dev/Compox2D)
+[![Kotlin](https://img.shields.io/badge/Kotlin-Multiplatform-7F52FF.svg)](https://kotlinlang.org/docs/multiplatform.html)
 
-* [/shared](./shared/src) is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-  - [commonMain](./shared/src/commonMain/kotlin) is for code that’s common for all targets.
-  - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-    For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-    the [iosMain](./shared/src/iosMain/kotlin) folder would be the right place for such calls.
-    Similarly, if you want to edit the Desktop (JVM) specific part, the [jvmMain](./shared/src/jvmMain/kotlin)
-    folder is the appropriate location.
+Compox2D is a Kotlin Multiplatform 2D game engine and framework designed to run across Android, Desktop, Web, and iOS using shared game logic and Compose-based rendering.
 
-### Running the apps
+The project is organized around a reusable `shared` module that contains the engine core, while platform-specific entry points such as Android, Desktop, Web, and iOS remain isolated in their respective app modules.
 
-Use the run configurations provided by the run widget in your IDE's toolbar. You can also use these commands and options:
+## Features
 
-- Android app: `./gradlew :androidApp:assembleDebug`
-- Desktop app:
-  - Hot reload: `./gradlew :desktopApp:hotRun --auto`
-  - Standard run: `./gradlew :desktopApp:run`
-- Web app:
-  - Wasm target (faster, modern browsers): `./gradlew :webApp:wasmJsBrowserDevelopmentRun`
-  - JS target (slower, supports older browsers): `./gradlew :webApp:jsBrowserDevelopmentRun`
-- iOS app: open the [/iosApp](./iosApp) directory in Xcode and run it from there.
+- Kotlin Multiplatform architecture
+- Shared core logic across platforms
+- Cross-platform game engine design
+- Compose-based UI and rendering integration
+- Box2D support for physics
+- JitPack-ready Maven publishing setup
 
----
+## Project structure
 
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html),
-[Compose Multiplatform](https://github.com/JetBrains/compose-multiplatform/#compose-multiplatform),
-[Kotlin/Wasm](https://kotl.in/wasm/)…
+- `shared/` — shared engine/core module
+- `androidApp/` — Android application target
+- `desktopApp/` — JVM/Desktop app target
+- `webApp/` — Web app target
+- `iosApp/` — iOS app target
+- `build.gradle.kts` — root Gradle configuration
+- `settings.gradle.kts` — project settings
+- `LICENSE` — MIT license
 
-We would appreciate your feedback on Compose/Web and Kotlin/Wasm in the public Slack channel [#compose-web](https://slack-chats.kotlinlang.org/c/compose-web).
-If you face any issues, please report them on [YouTrack](https://youtrack.jetbrains.com/newIssue?project=CMP).
+## Installation
+
+Add JitPack to your repositories:
+
+```gradle
+allprojects {
+    repositories {
+        maven { url = uri("https://jitpack.io") }
+    }
+}
+```
+
+Then add the dependency:
+
+```gradle
+dependencies {
+    implementation 'com.github.FelipeMz-dev:Compox2D:v0.1.0'
+}
+```
+
+Kotlin DSL:
+
+```kotlin
+dependencies {
+    implementation("com.github.FelipeMz-dev:Compox2D:v0.1.0")
+}
+```
+
+## Quick start
+
+### Clone the repository
+
+```bash
+git clone https://github.com/FelipeMz-dev/Compox2D.git
+cd Compox2D
+```
+
+### Build the project
+
+```bash
+./gradlew build
+```
+
+### Run the apps
+
+Android:
+
+```bash
+./gradlew :androidApp:assembleDebug
+```
+
+Desktop:
+
+```bash
+./gradlew :desktopApp:run
+```
+
+Web (JavaScript target):
+
+```bash
+./gradlew :webApp:jsBrowserDevelopmentRun
+```
+
+Web (Wasm target):
+
+```bash
+./gradlew :webApp:wasmJsBrowserDevelopmentRun
+```
+
+iOS:
+
+Open the `iosApp` directory in Xcode and run it from there.
+
+## Development notes
+
+This project is structured so that the engine logic remains in the `shared` module and platform-specific behavior stays in each target module. This makes the library easier to reuse and more portable across multiple environments.
+
+## Publishing a new version
+
+To publish a new JitPack release:
+
+```bash
+git add .
+git commit -m "Prepare release v0.1.0"
+git tag v0.1.0
+git push origin main --tags
+```
+
+JitPack will build automatically from the tag.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
+
+## Related technologies
+
+- [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)
+- [Compose Multiplatform](https://github.com/JetBrains/compose-multiplatform)
+- [Kotlin/Wasm](https://kotl.in/wasm/)
+- [Box2D](https://box2d.org/)
+
+## Contributing
+
+Contributions, bug reports, and feature requests are welcome. Please open an issue or submit a pull request with a clear description of the change.
