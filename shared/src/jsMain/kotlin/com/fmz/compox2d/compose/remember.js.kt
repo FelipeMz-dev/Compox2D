@@ -1,8 +1,8 @@
 package com.fmz.compox2d.compose
 
 import androidx.compose.runtime.Composable
+import com.fmz.compox2d.audio.AudioManagerImpl
 import com.fmz.compox2d.engine.assets.SpriteManager
-import com.fmz.compox2d.engine.audio.AudioManagerImpl
 import com.fmz.compox2d.engine.audio.AudioSystem
 import com.fmz.compox2d.input.sensor.SensorProcessor
 
