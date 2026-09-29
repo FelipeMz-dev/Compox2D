@@ -105,6 +105,12 @@ Open the `iosApp` directory in Xcode and run it from there.
 
 This project is structured so that the engine logic remains in the `shared` module and platform-specific behavior stays in each target module. This makes the library easier to reuse and more portable across multiple environments.
 
+### Library hygiene
+
+- Keep `shared/` publication-safe: no app entry points, no `App()` classes, no `ComposeUIViewController { App() }` wrappers, and no UI bootstrap code.
+- Keep platform-specific launch code in the local app modules (`androidApp/`, `desktopApp/`, `webApp/`, `iosApp/`).
+- Use `samples/` or `examples/` for demo scenes if you want to keep the app targets smaller and more focused.
+
 ## Publishing a new version
 
 To publish a new JitPack release:
