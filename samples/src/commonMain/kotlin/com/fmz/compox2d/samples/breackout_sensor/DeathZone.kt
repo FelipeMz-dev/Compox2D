@@ -1,4 +1,4 @@
-package com.fmz.compox2d.sample
+package com.fmz.compox2d.samples.breackout_sensor
 
 import com.fmz.compox2d.engine.core.GameObject
 import com.fmz.compox2d.engine.math.Vec2

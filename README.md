@@ -19,7 +19,8 @@ The project is organized around a reusable `shared` module that contains the eng
 
 ## Project structure
 
-- `shared/` — shared engine/core module
+- `shared/` — shared engine/core module; publication-safe library code only
+- `samples/` — demo/example code for local experiments; not published with the library
 - `androidApp/` — Android application target
 - `desktopApp/` — JVM/Desktop app target
 - `webApp/` — Web app target
@@ -104,6 +105,8 @@ Open the `iosApp` directory in Xcode and run it from there.
 ## Development notes
 
 This project is structured so that the engine logic remains in the `shared` module and platform-specific behavior stays in each target module. This makes the library easier to reuse and more portable across multiple environments.
+
+Samples and demos live outside the published artifact in the `samples/` folder, while app launch code remains in the platform-specific modules.
 
 ### Library hygiene
 

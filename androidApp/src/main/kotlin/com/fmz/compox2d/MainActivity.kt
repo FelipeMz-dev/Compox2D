@@ -11,7 +11,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import com.fmz.compox2d.compose.GameSceneView
-import com.fmz.compox2d.sample.MainScene
+import com.fmz.compox2d.samples.breackout_sensor.MainScene
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -1,8 +1,9 @@
-package com.fmz.compox2d.sample
+package com.fmz.compox2d.samples.breackout_sensor
 
 import com.fmz.compox2d.engine.core.GameScene
 import com.fmz.compox2d.engine.core.TransformState
 import com.fmz.compox2d.engine.graphics.GpuColor
+import com.fmz.compox2d.engine.graphics.GradientDirection
 import com.fmz.compox2d.engine.input.KeyButton
 import com.fmz.compox2d.engine.input.keyboard.KeyboardEvent
 import com.fmz.compox2d.engine.input.touch.TouchEvent
@@ -12,6 +13,7 @@ import com.fmz.compox2d.engine.render.RenderStyle
 import com.fmz.compox2d.engine.render.RenderTextOverflow
 import com.fmz.compox2d.engine.render.RenderTextStyle
 import com.fmz.compox2d.engine.render.Renderer
+import com.fmz.compox2d.engine.render.Viewport
 import com.fmz.compox2d.physics.PhysicsManager
 
 enum class GameState {
@@ -30,10 +32,22 @@ class MainScene : GameScene(PhysicsManager(gravity = Vec2.Zero)), SceneEventList
         get() = viewport().size.x
     val worldHeight: Float
         get() = viewport().size.y
+    val startBallPosition: Vec2
+        get() = Vec2(worldWidth / 2f, worldHeight - worldHeight * 0.2)
+    val startPaddlePosition: Vec2
+        get() = Vec2(worldWidth / 2f, worldHeight - worldHeight * 0.1)
+
+    override fun onViewportChanged(viewport: Viewport) {
+        super.onViewportChanged(viewport)
+        ball.moveStartPosition(startBallPosition)
+        paddle.moveStartPosition(startPaddlePosition)
+        restartWalls()
+        setupBricks()
+    }
 
     override fun onStart() {
-        ball = Ball(Vec2(worldWidth / 2f, worldHeight - 300f))
-        paddle = Paddle(this, Vec2(worldWidth / 2f, worldHeight - 250f))
+        ball = Ball(startBallPosition)
+        paddle = Paddle(this, startPaddlePosition)
         spawnGameObject(ball)
         spawnGameObject(paddle)
         spawnGameObject(InputHandler(this))
@@ -52,6 +66,12 @@ class MainScene : GameScene(PhysicsManager(gravity = Vec2.Zero)), SceneEventList
                 Vec2(worldWidth, 10f)
             )
         )
+    }
+
+    private fun restartWalls() {
+        removeGameObjectWhere { it is Wall }
+        removeGameObjectWhere { it is DeathZone }
+        setupWalls()
     }
 
     private fun setupBricks() {
@@ -73,25 +93,25 @@ class MainScene : GameScene(PhysicsManager(gravity = Vec2.Zero)), SceneEventList
                 GpuColor.Red,
                 GpuColor(0.95f, 0.45f, 0.2f),
                 GpuColor.Yellow,
-                direction = com.fmz.compox2d.engine.graphics.GradientDirection.Vertical
+                direction = GradientDirection.Vertical
             ),
             1 to GpuColor.gradient(
                 GpuColor(0.95f, 0.8f, 0.2f),
                 GpuColor.Yellow,
                 GpuColor(0.9f, 0.55f, 0.15f),
-                direction = com.fmz.compox2d.engine.graphics.GradientDirection.Vertical
+                direction = GradientDirection.Vertical
             ),
             2 to GpuColor.gradient(
                 GpuColor(0.2f, 0.85f, 0.4f),
                 GpuColor.Green,
                 GpuColor(0.1f, 0.6f, 0.9f),
-                direction = com.fmz.compox2d.engine.graphics.GradientDirection.Vertical
+                direction = GradientDirection.Vertical
             ),
             3 to GpuColor.gradient(
                 GpuColor(0.5f, 0.5f, 0.0f),
                 GpuColor.Magenta,
                 GpuColor(0.2f, 0.6f, 0.5f),
-                direction = com.fmz.compox2d.engine.graphics.GradientDirection.Vertical
+                direction = GradientDirection.Vertical
             )
         )
 

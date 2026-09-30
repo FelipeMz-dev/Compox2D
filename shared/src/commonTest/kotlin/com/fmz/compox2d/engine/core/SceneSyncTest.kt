@@ -65,7 +65,7 @@ class SceneSyncTest {
 
         val newState = TransformState(Vec2(50f, 60f), 90f)
         manager.updateBodyTransform(body.body, newState)
-        manager.syncOwnerTransforms()
+        gameObject.syncTransformFromPhysics(manager.getTransformState(body.body))
 
         assertTrue(kotlin.math.abs(50f - gameObject.currentState().position.x) < 0.01f)
         assertTrue(kotlin.math.abs(60f - gameObject.currentState().position.y) < 0.01f)

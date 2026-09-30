@@ -13,6 +13,7 @@ kotlin {
 }
 dependencies {
     implementation(projects.shared)
+    implementation(projects.samples)
 
     implementation(libs.androidx.activity.compose)
     implementation(libs.compose.foundation)

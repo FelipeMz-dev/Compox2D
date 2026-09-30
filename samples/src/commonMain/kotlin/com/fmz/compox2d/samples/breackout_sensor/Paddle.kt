@@ -1,4 +1,4 @@
-package com.fmz.compox2d.sample
+package com.fmz.compox2d.samples.breackout_sensor
 
 import com.fmz.compox2d.engine.core.GameObject
 import com.fmz.compox2d.engine.core.TransformState
@@ -15,7 +15,7 @@ import com.fmz.compox2d.physics.PhysicsMaterial
 import com.fmz.compox2d.physics.RigidBody
 import com.fmz.compox2d.physics.Shape
 
-class Paddle(val scene: SceneEventListener, val startPosition: Vec2)
+class Paddle(val scene: SceneEventListener, var startPosition: Vec2)
     : GameObject(), SensorListener, KeyboardListener {
     val size = Vec2(120f, 20f)
     val half = size.x / 2
@@ -70,6 +70,11 @@ class Paddle(val scene: SceneEventListener, val startPosition: Vec2)
     override fun fixedUpdate(dt: Float) {
         updatePosition { body.transformState.position }
         updateAngle { body.transformState.angle }
+    }
+
+    fun moveStartPosition(position: Vec2){
+        startPosition = position
+        returnPosition()
     }
 
     fun returnPosition() {

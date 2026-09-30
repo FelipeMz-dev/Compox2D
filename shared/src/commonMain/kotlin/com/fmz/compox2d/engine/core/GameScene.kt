@@ -6,8 +6,6 @@ import com.fmz.compox2d.engine.audio.AudioManager
 import com.fmz.compox2d.engine.audio.AudioPlayer
 import com.fmz.compox2d.engine.audio.AudioSystem
 import com.fmz.compox2d.engine.input.GameInput
-import com.fmz.compox2d.engine.input.keyboard.KeyboardProcessor
-import com.fmz.compox2d.engine.input.touch.TouchProcessor
 import com.fmz.compox2d.engine.math.Vec2
 import com.fmz.compox2d.engine.math.div
 import com.fmz.compox2d.engine.math.minus
@@ -29,19 +27,26 @@ abstract class GameScene(
     private val lifecycleDispatcher = SceneLifecycleDispatcher()
     private val fixedStepDispatcher = SceneFixedStepDispatcher()
 
-    private lateinit var spriteManager: SpriteManager
-    private lateinit var audioSystem: AudioSystem
-    private lateinit var gameInput: GameInput
+    private var spriteManager: SpriteManager? = null
+    private var audioSystem: AudioSystem? = null
+    private var gameInput: GameInput? = null
 
     internal var camera2D: Camera2D = Camera2D()
-    private lateinit var viewport: Viewport
+    private var _viewport: Viewport? = null
+    private var isStarted = false
 
-    override fun viewport() = viewport
+    val isAttached: Boolean
+        get() = spriteManager != null && audioSystem != null && gameInput != null
+
+    val isStartedScene: Boolean
+        get() = isStarted
+
+    override fun viewport(): Viewport = _viewport ?: Viewport(Vec2.Zero, Vec2(1f, 1f))
     override fun physicsManager() = physicsManager
     override fun audioPlayer() = audioSystem as? AudioPlayer
     override fun camera2D() = camera2D
 
-    override fun spriteSize(id: SpriteId) = spriteManager.getSize(id)
+    override fun spriteSize(id: SpriteId): Vec2 = spriteManager?.getSize(id) ?: Vec2.Zero
 
     override fun spawnGameObject(gameObject: GameObject) {
         entities.enqueueAdd(gameObject)
@@ -59,10 +64,12 @@ abstract class GameScene(
         attachSpriteManager(dependencies.spriteManager)
         attachAudioManager(dependencies.audioManager)
         attachInput(dependencies.gameInput)
+        tryStartScene()
     }
 
     fun attachSpriteManager(spriteManager: SpriteManager) {
         this.spriteManager = spriteManager
+        tryStartScene()
     }
 
     fun attachAudioManager(audioSystem: AudioSystem) {
@@ -72,21 +79,43 @@ abstract class GameScene(
             onAdded = (this.audioSystem as AudioManager)::registerListener,
             onRemoved = (this.audioSystem as AudioManager)::unregisterListener
         )
+        tryStartScene()
     }
 
     fun attachInput(gameInput: GameInput) {
         this.gameInput = gameInput
         gameInput.registerDispatcher(lifecycleDispatcher)
         gameInput.registerStepDispatcher(fixedStepDispatcher)
+        tryStartScene()
     }
 
     fun updateViewport(viewport: Viewport) {
-        this.viewport = viewport
+        val oldViewport = _viewport
+        this._viewport = viewport
         camera2D.viewportSize = viewport.size
+
+        if (!isStarted) {
+            tryStartScene()
+        } else if (oldViewport != null && oldViewport != viewport) {
+            onViewportChanged(viewport)
+        }
+    }
+
+    internal fun startScene() {
+        tryStartScene()
+    }
+
+    private fun tryStartScene() {
+        if (!isStarted && isAttached && _viewport != null) {
+            isStarted = true
+            onStart()
+        }
     }
 
     override fun calculateFromViewport(position: Vec2): Vec2 {
-        return position / viewport.scale
+        val currentViewport = viewport()
+        if (currentViewport.scale.x == 0f || currentViewport.scale.y == 0f) return position
+        return position / currentViewport.scale
     }
 
     override fun screenToWorld(position: Vec2): Vec2 {
@@ -104,11 +133,13 @@ abstract class GameScene(
     }
 
     final override fun update(deltaTime: Float) {
+        if (!isStarted) return
         onUpdate(deltaTime)
         entities.forEach { it.onUpdate(deltaTime) }
     }
 
     final override fun fixedUpdate(deltaTime: Float) {
+        if (!isStarted) return
         syncGameObjects()
         // Dispatch input and other fixed-step processors before physics update so
         // changes (e.g. updateTransform from input) are applied to the physics world
@@ -123,6 +154,7 @@ abstract class GameScene(
         renderer: Renderer,
         alpha: Float
     ) {
+        if (!isStarted) return
         renderer.onRender()
         entities.forEach {
             it.apply { renderer.render(alpha) }
@@ -131,13 +163,11 @@ abstract class GameScene(
         renderer.flush()
     }
 
-    internal fun startScene() {
-        onStart()
-    }
-
     open fun onStart() = Unit
 
     open fun onStop() = Unit
+
+    open fun onViewportChanged(viewport: Viewport) = Unit
 
     open fun onUpdate(dt: Float) = Unit
 

@@ -32,7 +32,20 @@ plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }
 
-include(":androidApp")
-include(":desktopApp")
-include(":shared")
-include(":webApp")
+val isJitPackBuild = providers.environmentVariable("JITPACK").orNull != null
+
+if (isJitPackBuild) {
+    // JitPack should publish only the library itself, without local app entry points.
+    include(":shared")
+} else {
+    // Local development modules: app entry points and platform demos.
+    include(":androidApp")
+    include(":desktopApp")
+    include(":webApp")
+
+    // Library publication module.
+    include(":shared")
+
+    // Non-published examples and demos.
+    include(":samples")
+}

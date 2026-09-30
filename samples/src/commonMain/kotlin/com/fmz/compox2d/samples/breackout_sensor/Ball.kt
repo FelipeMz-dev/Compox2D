@@ -1,4 +1,4 @@
-package com.fmz.compox2d.sample
+package com.fmz.compox2d.samples.breackout_sensor
 
 import com.fmz.compox2d.engine.core.GameObject
 import com.fmz.compox2d.engine.core.TransformState
@@ -20,7 +20,7 @@ import com.fmz.compox2d.physics.RigidBody
 import com.fmz.compox2d.physics.Shape
 import kotlin.math.abs
 
-class Ball(private val startPosition: Vec2) : GameObject(), CollisionListener {
+class Ball(private var startPosition: Vec2) : GameObject(), CollisionListener {
     private val radius = 20f
     private lateinit var body: RigidBody
     private var savedVelocity: Vec2 = Vec2.Zero
@@ -89,10 +89,15 @@ class Ball(private val startPosition: Vec2) : GameObject(), CollisionListener {
     override fun Renderer.onRender(state: TransformState) {
         drawCircle(
             radius = radius,
-            color = GpuColor.Companion.Black,
+            color = GpuColor.Black,
             state = state,
             style = RenderStyle.Fill
         )
+    }
+
+    fun moveStartPosition(position: Vec2){
+        startPosition = position
+        returnPosition()
     }
 
     fun returnPosition() {
@@ -110,7 +115,7 @@ class Ball(private val startPosition: Vec2) : GameObject(), CollisionListener {
 
     fun stop() {
         savedVelocity = body.physicState.linearVelocity
-        body.updatePhysic { it.copy(linearVelocity = Vec2.Companion.Zero) }
+        body.updatePhysic { it.copy(linearVelocity = Vec2.Zero) }
     }
 
     fun resume() {

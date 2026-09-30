@@ -1,4 +1,4 @@
-package com.fmz.compox2d.sample
+package com.fmz.compox2d.samples.breackout_sensor
 
 import com.fmz.compox2d.engine.core.GameObject
 import com.fmz.compox2d.engine.core.TransformState
@@ -9,17 +9,7 @@ import com.fmz.compox2d.physics.CollisionBodyType
 import com.fmz.compox2d.physics.PhysicsMaterial
 import com.fmz.compox2d.physics.Shape
 
-class Brick(
-    val scene: SceneEventListener,
-    val pos: Vec2,
-    val size: Vec2,
-    var colors: Map<Int, GpuColor>,
-    var durability: Int
-) : GameObject() {
-
-    private val color: GpuColor
-        get() = colors[durability] ?: GpuColor.Black
-
+class Wall(val pos: Vec2, val size: Vec2) : GameObject() {
     override fun onEnterScene() {
         updatePosition { pos }
         createRigidBody(
@@ -29,15 +19,7 @@ class Brick(
         )
     }
 
-    fun takeDamage() {
-        durability--
-        if (durability <= 0) {
-            scene.onBrickDestroyed(this)
-            deleteInstance(this)
-        }
-    }
-
     override fun Renderer.onRender(state: TransformState) {
-        drawRect(size = size, color = color, state = state)
+        drawRect(size = size, color = GpuColor.Gray, state = state)
     }
 }

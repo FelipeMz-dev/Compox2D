@@ -67,7 +67,7 @@ actual class AudioManagerImpl : AudioManager,
     }
 
     actual override fun isMusicPlaying(id: AudioId): Boolean {
-        TODO("Not yet implemented")
+        return false
     }
 
     actual override fun stopMusics() {
