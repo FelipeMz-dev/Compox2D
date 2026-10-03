@@ -35,16 +35,16 @@ plugins {
 val isJitPackBuild = providers.environmentVariable("JITPACK").orNull != null
 
 if (isJitPackBuild) {
-    // JitPack should publish only the library itself, without local app entry points.
-    include(":shared")
+    include(":core", ":compose")
 } else {
     // Local development modules: app entry points and platform demos.
     include(":androidApp")
     include(":desktopApp")
     include(":webApp")
+    include(":iosApp")
 
-    // Library publication module.
-    include(":shared")
+    // Engine core and optional Compose integration.
+    include(":core", ":compose")
 
     // Non-published examples and demos.
     include(":samples")

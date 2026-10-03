@@ -4,9 +4,9 @@
 [![JitPack](https://jitpack.io/v/FelipeMz-dev/Compox2D.svg)](https://jitpack.io/#FelipeMz-dev/Compox2D)
 [![Kotlin](https://img.shields.io/badge/Kotlin-Multiplatform-7F52FF.svg)](https://kotlinlang.org/docs/multiplatform.html)
 
-Compox2D is a Kotlin Multiplatform 2D game engine and framework designed to run across Android, Desktop, Web, and iOS using shared game logic and Compose-based rendering.
+Compox2D is a Kotlin Multiplatform 2D game engine for Android, Desktop, Web, and iOS. Its engine core is independent of UI frameworks, with Compose support provided as an optional integration module.
 
-The project is organized around a reusable `shared` module that contains the engine core, while platform-specific entry points such as Android, Desktop, Web, and iOS remain isolated in their respective app modules.
+The project separates the reusable engine core from Compose-based rendering and input integration.
 
 ## Features
 
@@ -19,7 +19,8 @@ The project is organized around a reusable `shared` module that contains the eng
 
 ## Project structure
 
-- `shared/` — shared engine/core module; publication-safe library code only
+- `core/` — platform-independent engine and physics APIs; has no Compose dependency
+- `compose/` — optional Compose rendering, input, and platform resource adapters
 - `samples/` — demo/example code for local experiments; not published with the library
 - `androidApp/` — Android application target
 - `desktopApp/` — JVM/Desktop app target
@@ -43,17 +44,17 @@ allprojects {
 
 Then add the dependency:
 
-```gradle
+```kotlin
 dependencies {
-    implementation 'com.github.FelipeMz-dev:Compox2D:v0.1.0'
+    implementation("com.github.FelipeMz-dev:core:v0.1.0")
 }
 ```
 
-Kotlin DSL:
+To use the Compose renderer, add the integration module instead; it exposes the core transitively:
 
 ```kotlin
 dependencies {
-    implementation("com.github.FelipeMz-dev:Compox2D:v0.1.0")
+    implementation("com.github.FelipeMz-dev:compose:v0.1.0")
 }
 ```
 
@@ -92,25 +93,20 @@ Web (JavaScript target):
 ./gradlew :webApp:jsBrowserDevelopmentRun
 ```
 
-Web (Wasm target):
-
-```bash
-./gradlew :webApp:wasmJsBrowserDevelopmentRun
-```
-
 iOS:
 
 Open the `iosApp` directory in Xcode and run it from there.
 
 ## Development notes
 
-This project is structured so that the engine logic remains in the `shared` module and platform-specific behavior stays in each target module. This makes the library easier to reuse and more portable across multiple environments.
+Engine logic and framework-neutral image/input contracts live in `core`; Compose UI and Compose-backed platform implementations live in `compose`. This keeps core consumers independent of Compose while preserving the Compose game view for apps.
 
 Samples and demos live outside the published artifact in the `samples/` folder, while app launch code remains in the platform-specific modules.
 
 ### Library hygiene
 
-- Keep `shared/` publication-safe: no app entry points, no `App()` classes, no `ComposeUIViewController { App() }` wrappers, and no UI bootstrap code.
+- Keep `core/` independent of Compose and app entry points.
+- Keep `compose/` limited to the optional Compose integration.
 - Keep platform-specific launch code in the local app modules (`androidApp/`, `desktopApp/`, `webApp/`, `iosApp/`).
 - Use `samples/` or `examples/` for demo scenes if you want to keep the app targets smaller and more focused.
 
@@ -135,7 +131,7 @@ This project is licensed under the [MIT License](LICENSE).
 
 - [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)
 - [Compose Multiplatform](https://github.com/JetBrains/compose-multiplatform)
-- [Kotlin/Wasm](https://kotl.in/wasm/)
+- [Kotlin/JS](https://kotlinlang.org/docs/js-overview.html)
 - [Box2D](https://box2d.org/)
 
 ## Contributing
