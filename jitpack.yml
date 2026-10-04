@@ -1,5 +1,6 @@
 jdk:
   - openjdk17
+env:
+  - JITPACK=1
 install:
-  - export JITPACK=1
   - ./gradlew :core:publishToMavenLocal :compose:publishToMavenLocal
